@@ -1,0 +1,10 @@
+.terraform/
+*.tfstate
+*.tfstate.*
+# Generated in Atlantis by the pre-workflow hooks (make generate locally).
+_terramate_generated_*.tf
+atlantis.yaml
+atlantis/.env
+atlantis/.env.tunnel
+atlantis/github-app.pem
+atlantis/.e2e-comments/

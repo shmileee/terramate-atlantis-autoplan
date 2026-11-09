@@ -1,0 +1,11 @@
+# Server-side repo config. Nothing generated is committed. Before Atlantis
+# reads atlantis.yaml, two hooks run in the pull request's clone: Terramate
+# writes the stacks' generated Terraform, then terramate-atlantis-config
+# writes atlantis.yaml. Atlantis then plans with its default workflow.
+repos:
+  - id: /.*/
+    pre_workflow_hooks:
+      - run: terramate generate
+        description: terramate generate
+      - run: terramate-atlantis-config generate --output atlantis.yaml
+        description: terramate-atlantis-config

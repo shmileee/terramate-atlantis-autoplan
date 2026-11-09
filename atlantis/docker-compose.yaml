@@ -1,0 +1,31 @@
+# Atlantis on this machine, reached by GitHub through a Cloudflare quick
+# tunnel. `make up` (up.sh) starts the tunnel first, points the GitHub App's
+# webhook at its URL, then starts Atlantis with that URL.
+name: terramate-atlantis-autoplan
+
+services:
+  tunnel:
+    image: cloudflare/cloudflared:2026.10.7
+    command: tunnel --no-autoupdate --url http://atlantis:4141
+
+  atlantis:
+    build: .
+    env_file:
+      - .env          # GitHub App id, slug, webhook secret (create-github-app.py)
+      - .env.tunnel   # public URL and repo allowlist (up.sh)
+    environment:
+      ATLANTIS_GH_APP_KEY_FILE: /etc/atlantis/github-app.pem
+      ATLANTIS_REPO_CONFIG: /etc/atlantis/repos.yaml
+      ATLANTIS_WRITE_GIT_CREDS: "true"
+      ATLANTIS_FAIL_ON_PRE_WORKFLOW_HOOK_ERROR: "true"
+      ATLANTIS_DEFAULT_TF_VERSION: 1.15.8
+      ATLANTIS_TF_DOWNLOAD: "false"
+    ports:
+      - "4141:4141"
+    volumes:
+      - ./repos.yaml:/etc/atlantis/repos.yaml:ro
+      - ./github-app.pem:/etc/atlantis/github-app.pem:ro
+    healthcheck:
+      test: ["CMD", "curl", "-sf", "http://localhost:4141/healthz"]
+      interval: 5s
+      retries: 30

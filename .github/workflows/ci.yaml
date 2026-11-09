@@ -1,0 +1,28 @@
+name: ci
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      # Terraform, Terramate and terramate-atlantis-config, as pinned in mise.toml.
+      - uses: jdx/mise-action@v5
+
+      - name: Generate the Terraform files, as Atlantis does
+        run: terramate generate
+
+      - uses: devops-roast/terramate-atlantis-config@v1
+        with:
+          output: atlantis.yaml
+
+      - name: atlantis.yaml is valid
+        run: terramate-atlantis-config validate atlantis.yaml

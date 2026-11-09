@@ -1,0 +1,9 @@
+output: atlantis.yaml
+
+# Add the Terramate files each stack depends on to its when_modified, so a
+# change outside a stack's directory still plans it.
+when_modified_from_config: true
+
+# Turn each stack's `after` into Atlantis ordering.
+depends_on: true
+execution_order_groups: true
