@@ -1,3 +1,3 @@
 globals {
-  account_name = "acme-development"
+  account_name = "acme-development-v2"
 }
