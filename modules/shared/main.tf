@@ -3,5 +3,5 @@ variable "name" {
 }
 
 resource "terraform_data" "this" {
-  input = var.name
+  input = "${var.name}-v2"
 }
